@@ -16,6 +16,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "لعبة مع Friends - ألعاب جماعية أونلاين",
   description: "منصة ألعاب جماعية أونلاين - العب مع أصدقائك",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#10b981",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

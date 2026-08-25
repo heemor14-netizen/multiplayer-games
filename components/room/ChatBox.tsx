@@ -56,7 +56,7 @@ export function ChatBox({ roomId, currentUid }: ChatBoxProps) {
           </span>
         </div>
 
-        <div className="flex h-64 flex-col gap-1 overflow-y-auto p-3">
+        <div className="flex h-56 flex-col gap-1 overflow-y-auto p-3 sm:h-64">
           {messages.length === 0 && (
             <p className="py-8 text-center text-xs font-medium text-zinc-400">لا توجد رسائل</p>
           )}
@@ -90,17 +90,17 @@ export function ChatBox({ roomId, currentUid }: ChatBoxProps) {
           <div ref={bottomRef} />
         </div>
 
-        <div className="flex gap-2 border-t border-zinc-100 p-3 dark:border-zinc-800">
+        <div className="flex gap-2 border-t border-zinc-100 p-2 sm:p-3 dark:border-zinc-800">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             placeholder="اكتب رسالة..."
-            className="flex-1 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 dark:border-zinc-700 dark:bg-zinc-800/80"
+            className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 dark:border-zinc-700 dark:bg-zinc-800/80 sm:px-4"
           />
           <button
             onClick={send}
-            className="gradient-primary rounded-xl px-4 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.98]"
+            className="gradient-primary shrink-0 rounded-xl px-3 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.98] sm:px-4"
           >
             إرسال
           </button>

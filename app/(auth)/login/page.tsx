@@ -46,9 +46,9 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
       <Header />
-      <main className="flex flex-1 items-center justify-center px-4 py-20">
+      <main className="flex flex-1 items-center justify-center px-4 py-12 sm:py-20">
         <div className="w-full max-w-sm animate-scale-in">
-          <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80">
+          <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-6 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80 sm:p-8">
             <div className="mb-6 text-center">
               <span className="text-4xl">🎮</span>
               <h1 className="mt-2 text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">

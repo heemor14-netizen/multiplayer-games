@@ -93,10 +93,10 @@ export default function RoomPage() {
       .sort((a, b) => b.score - a.score);
 
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4 sm:gap-6">
         <div className="animate-scale-in text-center">
-          <span className="text-7xl">🏆</span>
-          <h1 className="mt-4 text-3xl font-extrabold text-gradient">
+          <span className="text-5xl sm:text-7xl">🏆</span>
+          <h1 className="mt-4 text-2xl font-extrabold text-gradient sm:text-3xl">
             النتائج النهائية
           </h1>
           <p className="mt-1 text-sm font-medium text-zinc-500">
@@ -132,13 +132,13 @@ export default function RoomPage() {
           ))}
         </div>
 
-        <div className="flex gap-3 animate-slide-up">
+        <div className="flex flex-col gap-3 sm:flex-row animate-slide-up">
           {isHost && (
-            <Button onClick={handleRematch} loading={sending} size="lg">
+            <Button onClick={handleRematch} loading={sending} size="lg" className="w-full sm:w-auto">
               إعادة المباراة
             </Button>
           )}
-          <Button variant="danger" onClick={handleLeave} size="lg">
+          <Button variant="danger" onClick={handleLeave} size="lg" className="w-full sm:w-auto">
             مغادرة
           </Button>
         </div>
@@ -148,21 +148,21 @@ export default function RoomPage() {
 
   return (
     <div className="p-4 lg:p-8">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-100 sm:text-2xl">
             {game?.icon} {game?.name}
           </h1>
-          <p className="mt-1 text-sm font-medium text-zinc-500">
+          <p className="mt-1 text-xs font-medium text-zinc-500 sm:text-sm">
             غرفة: {roomId} | اللاعبون: {playerCount}/{currentRoom.metadata.maxPlayers}
           </p>
         </div>
-        <Button variant="danger" size="sm" onClick={handleLeave}>
+        <Button variant="danger" size="sm" onClick={handleLeave} className="w-full sm:w-auto">
           مغادرة
         </Button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
         <div className="flex flex-col gap-6">
           <PlayerList
             players={currentRoom.players}

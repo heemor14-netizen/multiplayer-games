@@ -15,16 +15,16 @@ export function GameSelector({
 }: GameSelectorProps) {
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+      <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 sm:text-sm">
         اللعبة المحددة
       </span>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
         {Object.values(GAMES).map((game) => (
           <button
             key={game.id}
             onClick={() => onChange(game.id)}
             disabled={disabled}
-            className={`flex items-center gap-2 rounded-xl border-2 p-3 text-sm font-medium transition-all duration-200
+            className={`flex items-center gap-1.5 rounded-xl border-2 p-2.5 text-xs font-medium transition-all duration-200 sm:gap-2 sm:p-3 sm:text-sm
               ${
                 currentGame === game.id
                   ? "border-emerald-400 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-500/10 dark:border-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"

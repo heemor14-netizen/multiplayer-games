@@ -15,35 +15,39 @@ export function Header() {
         </span>
       </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 sm:gap-3">
         {user ? (
           <>
             <Link
               href="/"
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-zinc-600 transition-all hover:bg-emerald-50 hover:text-emerald-700 dark:text-zinc-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
+              className="rounded-xl px-2 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-emerald-50 hover:text-emerald-700 dark:text-zinc-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400 sm:px-4 sm:text-sm"
             >
-              لوحة التحكم
+              <span className="hidden sm:inline">لوحة التحكم</span>
+              <span className="sm:hidden">🏠</span>
             </Link>
             <button
               onClick={() => signOut()}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/20"
+              className="rounded-xl px-2 py-2 text-xs font-semibold text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/20 sm:px-4 sm:text-sm"
             >
-              خروج
+              <span className="hidden sm:inline">خروج</span>
+              <span className="sm:hidden">🚪</span>
             </button>
           </>
         ) : (
           <>
             <Link
               href="/login"
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-zinc-600 transition-all hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="rounded-xl px-2 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:px-4 sm:text-sm"
             >
-              تسجيل الدخول
+              <span className="hidden sm:inline">تسجيل الدخول</span>
+              <span className="sm:hidden">دخول</span>
             </Link>
             <Link
               href="/register"
-              className="gradient-primary rounded-xl px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-xl hover:shadow-emerald-500/30 hover:brightness-110 active:scale-[0.98]"
+              className="gradient-primary rounded-xl px-3 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-xl hover:shadow-emerald-500/30 hover:brightness-110 active:scale-[0.98] sm:px-5 sm:text-sm"
             >
-              حساب جديد
+              <span className="hidden sm:inline">حساب جديد</span>
+              <span className="sm:hidden">سجّل</span>
             </Link>
           </>
         )}
