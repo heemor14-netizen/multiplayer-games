@@ -108,7 +108,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         const player: RoomPlayer = {
           uid: user.uid,
           name: profile.displayName,
-          photoURL: profile.photoURL,
+          photoURL: profile.photoURL ?? null,
           score: 0,
           joinedAt: Date.now(),
         };
@@ -163,7 +163,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         const player: RoomPlayer = {
           uid: user.uid,
           name: profile.displayName,
-          photoURL: profile.photoURL,
+          photoURL: profile.photoURL ?? null,
           score: 0,
           joinedAt: Date.now(),
         };

@@ -50,7 +50,7 @@ async function getOrCreateProfile(user: User): Promise<UserProfile> {
   const profile: UserProfile = {
     uid: user.uid,
     displayName: user.displayName || user.email?.split("@")[0] || "Player",
-    photoURL: user.photoURL,
+    photoURL: user.photoURL ?? null,
     totalScore: 0,
     gamesPlayed: 0,
     createdAt: Date.now(),
