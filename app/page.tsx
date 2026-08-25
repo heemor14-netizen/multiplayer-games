@@ -67,6 +67,9 @@ function DashboardPage() {
   const { createRoom, availableRooms, joinRoom, sending } = useRoom();
   const router = useRouter();
   const [selectedGame, setSelectedGame] = useState<GameId>("animal-plant-human");
+  const [filterGame, setFilterGame] = useState<GameId | "all">("all");
+  const [joinId, setJoinId] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleCreate = async () => {
     try {
@@ -126,13 +129,61 @@ function DashboardPage() {
         <h2 className="mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-200">
           غرف متاحة
         </h2>
-        {availableRooms.length === 0 ? (
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterGame("all")}
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              filterGame === "all"
+                ? "bg-emerald-600 text-white"
+                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
+            }`}
+          >
+            الكل
+          </button>
+          {Object.values(GAMES).map((game) => (
+            <button
+              key={game.id}
+              onClick={() => setFilterGame(game.id as GameId)}
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                filterGame === game.id
+                  ? "bg-emerald-600 text-white"
+                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
+              }`}
+            >
+              {game.icon} {game.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="mb-4 flex items-center gap-3">
+          <input
+            value={joinId}
+            onChange={(e) => setJoinId(e.target.value.toUpperCase())}
+            onKeyDown={(e) => e.key === "Enter" && joinId.trim() && handleJoin(joinId.trim())}
+            placeholder="أدخل رقم الغرفة..."
+            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+            dir="ltr"
+          />
+          <Button
+            size="sm"
+            onClick={() => joinId.trim() && handleJoin(joinId.trim())}
+            disabled={!joinId.trim()}
+            loading={sending}
+          >
+            انضمام بالرقم
+          </Button>
+        </div>
+
+        {availableRooms.filter((r) => filterGame === "all" || r.metadata.game === filterGame).length === 0 ? (
           <p className="text-sm text-zinc-500">
             لا توجد غرف متاحة حالياً. أنشئ غرفة جديدة!
           </p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {availableRooms.map((room) => (
+            {availableRooms
+              .filter((r) => filterGame === "all" || r.metadata.game === filterGame)
+              .map((room) => (
               <div
                 key={room.id}
                 className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
@@ -143,7 +194,7 @@ function DashboardPage() {
                     {GAMES[room.metadata.game]?.name}
                   </p>
                   <p className="text-xs text-zinc-500">
-                    {Object.keys(room.players).length}/{room.metadata.maxPlayers}{" "}
+                    {room.id} | {Object.keys(room.players).length}/{room.metadata.maxPlayers}{" "}
                     لاعب
                   </p>
                 </div>
@@ -166,6 +217,7 @@ function DashboardPage() {
 
 export default function Home() {
   const { user, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) {
     return (
@@ -178,8 +230,14 @@ export default function Home() {
   if (user) {
     return (
       <div className="flex min-h-screen flex-row-reverse">
-        <Sidebar />
+        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 overflow-auto">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="fixed bottom-4 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 lg:hidden"
+          >
+            ☰
+          </button>
           <DashboardPage />
         </main>
       </div>

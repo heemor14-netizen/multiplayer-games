@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { QUESTIONS, type QuizGameState } from "./index";
 import { logger } from "@/lib/logger";
+import { persistScores } from "@/lib/gameEnd";
 
 const SHOW_TIME = 10;
 const ANSWER_TIME = 15;
@@ -153,6 +154,8 @@ export default function Quiz({ roomId }: { roomId: string }) {
   };
 
   const endGame = async () => {
+    if (!gameData) return;
+    await persistScores(gameData.scores as Record<string, unknown>, gameData.players);
     const db = getFirebaseRTDB();
     await update(ref(db, `rooms/${roomId}/metadata`), { status: "finished" });
   };

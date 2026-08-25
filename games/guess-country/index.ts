@@ -29,7 +29,7 @@ export const COUNTRIES: Record<string, { hint: string; letter: string }[]> = {
     { hint: "بلد آسيوي عاصمتها جاكرتا", letter: "ج" },
   ],
   ح: [
-    { hint: "بلد في أفريقيا عاصمتها Харترум", letter: "ح" },
+    { hint: "بلد في أفريقيا عاصمتها الخرطوم", letter: "ح" },
     { hint: "دولة في أمريكا الجنوبية عاصمتها هافانا", letter: "ح" },
   ],
   د: [
@@ -39,15 +39,15 @@ export const COUNTRIES: Record<string, { hint: string; letter: string }[]> = {
   ],
   ر: [
     { hint: "بلد في أفريقيا عاصمتها كيغالي", letter: "ر" },
-    { hint: "دولة في أفريقيا عاصمتها روما", letter: "ر" },
+    { hint: "دولة أوروبية عاصمتها روما", letter: "ر" },
   ],
   س: [
     { hint: "بلد في الشرق الأوسط عاصمتها الرياض", letter: "س" },
-    { hint: "دولة في أفريقيا ع陇متها الخرطوم", letter: "س" },
+    { hint: "دولة في أفريقيا عاصمتها الخرطوم", letter: "س" },
     { hint: "بلد في آسيا عاصمتها سنغافورة", letter: "س" },
   ],
   ش: [
-    { hint: "بلد في أفريقيا عاصمتها شيلي", letter: "ش" },
+    { hint: "دولة في أفريقيا عاصمتها كيب تاون", letter: "ش" },
   ],
   ع: [
     { hint: "بلد في الشرق الأوسط عاصمتها عمان", letter: "ع" },
@@ -72,7 +72,7 @@ export const COUNTRIES: Record<string, { hint: string; letter: string }[]> = {
   م: [
     { hint: "بلد في أفريقيا عاصمتها الرباط", letter: "م" },
     { hint: "دولة في أفريقيا عاصمتها باماكو", letter: "م" },
-    { hint: "بلد في أفريقيا عاصمتها موزمبيق", letter: "م" },
+    { hint: "دولة في أفريقيا عاصمتها مابوتو", letter: "م" },
   ],
   ن: [
     { hint: "بلد في أفريقيا عاصمتها نيامي", letter: "ن" },
@@ -83,7 +83,7 @@ export const COUNTRIES: Record<string, { hint: string; letter: string }[]> = {
     { hint: "دولة في أفريقيا عاصمتها هونولولو", letter: "ه" },
   ],
   و: [
-    { hint: "بلد في أفريقيا عاصمتها أوغندا", letter: "و" },
+    { hint: "دولة في أفريقيا عاصمتها كامبالا", letter: "و" },
   ],
   ي: [
     { hint: "بلد في أفريقيا عاصمتها يامي", letter: "ي" },

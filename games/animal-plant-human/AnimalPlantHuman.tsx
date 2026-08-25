@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { LETTERS, CATEGORIES, type Category } from "./index";
 import { logger } from "@/lib/logger";
+import { persistScores } from "@/lib/gameEnd";
 
 const ROUND_TIME = 30;
 const TOTAL_ROUNDS = 3;
@@ -180,6 +181,8 @@ export default function AnimalPlantHuman({ roomId }: { roomId: string }) {
   };
 
   const endGame = async () => {
+    if (!gameData) return;
+    await persistScores(gameData.scores as Record<string, unknown>, gameData.players);
     await update(ref(getFirebaseRTDB(), `rooms/${roomId}/metadata`), {
       status: "finished",
     });

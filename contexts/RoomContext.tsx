@@ -34,6 +34,7 @@ interface RoomState {
   kickPlayer: (targetUid: string) => Promise<void>;
   changeGame: (game: GameId) => Promise<void>;
   startGame: () => Promise<void>;
+  rematch: () => Promise<void>;
   sending: boolean;
 }
 
@@ -267,6 +268,25 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     });
   }, [currentRoomId, user, currentRoom]);
 
+  const rematch = useCallback(async () => {
+    if (!currentRoomId || !user || !currentRoom) return;
+    if (currentRoom.metadata.host !== user.uid) return;
+
+    const db = getFirebaseRTDB();
+    const updates: Record<string, unknown> = {};
+    updates[`rooms/${currentRoomId}/metadata/status`] = "lobby";
+    updates[`rooms/${currentRoomId}/gameState`] = null;
+
+    const resetPlayers: Record<string, { score: number }> = {};
+    for (const uid of Object.keys(currentRoom.players)) {
+      resetPlayers[uid] = { score: 0 };
+    }
+    updates[`rooms/${currentRoomId}/players`] = resetPlayers;
+
+    await update(ref(db), updates);
+    logger.info("Rematch started", { roomId: currentRoomId });
+  }, [currentRoomId, user, currentRoom]);
+
   return (
     <RoomContext.Provider
       value={{
@@ -279,6 +299,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         kickPlayer,
         changeGame,
         startGame,
+        rematch,
         sending,
       }}
     >

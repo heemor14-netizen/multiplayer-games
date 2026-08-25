@@ -21,6 +21,7 @@ export default function RoomPage() {
     kickPlayer,
     changeGame,
     startGame,
+    rematch,
     sending,
   } = useRoom();
   const router = useRouter();
@@ -64,7 +65,7 @@ export default function RoomPage() {
 
   const handleLeave = async () => {
     await leaveRoom();
-    router.push("/rooms/");
+    window.location.href = `${BASE_PATH}/`;
   };
 
   const handleStart = async () => {
@@ -74,6 +75,74 @@ export default function RoomPage() {
       alert(err instanceof Error ? err.message : "خطأ في بدء اللعبة");
     }
   };
+
+  const handleRematch = async () => {
+    try {
+      await rematch();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "خطأ في إعادة المباراة");
+    }
+  };
+
+  if (currentRoom.metadata.status === ROOM_STATUS.FINISHED) {
+    const gameState = currentRoom.gameState as Record<string, unknown> | null;
+    const scores = (gameState?.scores ?? {}) as Record<string, number>;
+    const players = currentRoom.players;
+    const sorted = Object.entries(scores)
+      .map(([uid, score]) => ({ uid, name: players[uid]?.name || uid, score }))
+      .sort((a, b) => b.score - a.score);
+
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
+        <span className="text-6xl">🏆</span>
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          النتائج النهائية
+        </h1>
+        <p className="text-sm text-zinc-500">
+          {game?.icon} {game?.name} | غرفة: {roomId}
+        </p>
+
+        <div className="w-full max-w-md">
+          {sorted.length === 0 && (
+            <p className="text-center text-zinc-500">لا توجد نتائج</p>
+          )}
+          {sorted.map((entry, idx) => (
+            <div
+              key={entry.uid}
+              className={`flex items-center justify-between rounded-lg p-3 ${
+                idx === 0
+                  ? "bg-yellow-100 dark:bg-yellow-900/20"
+                  : "bg-zinc-50 dark:bg-zinc-800"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-bold text-zinc-500">
+                  #{idx + 1}
+                </span>
+                <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                  {entry.name}
+                </span>
+              </div>
+              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                {entry.score} نقطة
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-3">
+          {isHost && (
+            <Button onClick={handleRematch} loading={sending}>
+              إعادة المباراة
+            </Button>
+          )}
+          <Button variant="danger" onClick={handleLeave}>
+            مغادرة
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">

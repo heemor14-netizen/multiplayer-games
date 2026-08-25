@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { DRAW_WORDS, type DrawingState } from "./index";
 import { logger } from "@/lib/logger";
+import { persistScores } from "@/lib/gameEnd";
 
 const DRAW_TIME = 60;
 const GUESS_TIME = 30;
@@ -220,6 +221,8 @@ export default function Drawing({ roomId }: { roomId: string }) {
   };
 
   const endGame = async () => {
+    if (!gameData) return;
+    await persistScores(gameData.scores as Record<string, unknown>, gameData.players);
     const db = getFirebaseRTDB();
     await update(ref(db, `rooms/${roomId}/metadata`), { status: "finished" });
   };

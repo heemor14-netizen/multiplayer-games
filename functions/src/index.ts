@@ -149,10 +149,17 @@ export const endGame = functions.https.onCall(async (data, context) => {
   updates[`rooms/${roomId}/gameState`] = null;
 
   if (room.gameState?.scores) {
-    for (const [uid, scores] of Object.entries(room.gameState.scores as Record<string, Record<string, number>>)) {
-      const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
-      updates[`users/${uid}/totalScore`] = admin.database.ServerValue.increment(totalScore);
-      updates[`users/${uid}/gamesPlayed`] = admin.database.ServerValue.increment(1);
+    for (const [uid, scores] of Object.entries(room.gameState.scores as Record<string, unknown>)) {
+      let totalScore = 0;
+      if (typeof scores === "number") {
+        totalScore = scores;
+      } else if (typeof scores === "object" && scores !== null) {
+        totalScore = Object.values(scores as Record<string, number>).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0);
+      }
+      if (totalScore > 0) {
+        updates[`users/${uid}/totalScore`] = admin.database.ServerValue.increment(totalScore);
+        updates[`users/${uid}/gamesPlayed`] = admin.database.ServerValue.increment(1);
+      }
     }
   }
 

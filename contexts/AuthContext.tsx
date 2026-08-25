@@ -22,6 +22,21 @@ import { getFirebaseAuth, getFirebaseRTDB } from "@/lib/firebase";
 import { logger } from "@/lib/logger";
 import type { UserProfile } from "@/types/user";
 
+function translateAuthError(error: unknown): string {
+  const code = (error as { code?: string })?.code || "";
+  const map: Record<string, string> = {
+    "auth/user-not-found": "البريد الإلكتروني غير مسجل",
+    "auth/wrong-password": "كلمة المرور غير صحيحة",
+    "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل",
+    "auth/invalid-email": "البريد الإلكتروني غير صالح",
+    "auth/weak-password": "كلمة المرور ضعيفة (6 أحرف على الأقل)",
+    "auth/too-many-requests": "محاولات كثيرة. حاول لاحقاً",
+    "auth/popup-closed-by-user": "تم إغلاق نافذة تسجيل الدخول",
+    "auth/network-request-failed": "خطأ في الاتصال بالشبكة",
+  };
+  return map[code] || (error instanceof Error ? error.message : "خطأ غير معروف");
+}
+
 interface AuthState {
   user: User | null;
   profile: UserProfile | null;
@@ -86,8 +101,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
-    logger.info("User signed in", { email });
+    try {
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+      logger.info("User signed in", { email });
+    } catch (err) {
+      throw new Error(translateAuthError(err));
+    }
   };
 
   const signUp = async (
@@ -95,16 +114,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     displayName: string
   ) => {
-    const cred = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
-    await updateProfile(cred.user, { displayName });
-    await getOrCreateProfile(cred.user);
-    logger.info("User signed up", { email });
+    try {
+      const cred = await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+      await updateProfile(cred.user, { displayName });
+      await getOrCreateProfile(cred.user);
+      logger.info("User signed up", { email });
+    } catch (err) {
+      throw new Error(translateAuthError(err));
+    }
   };
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(getFirebaseAuth(), provider);
-    logger.info("User signed in with Google");
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(getFirebaseAuth(), provider);
+      logger.info("User signed in with Google");
+    } catch (err) {
+      throw new Error(translateAuthError(err));
+    }
   };
 
   const signOut = async () => {

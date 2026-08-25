@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { COUNTRIES } from "./index";
 import { logger } from "@/lib/logger";
+import { persistScores } from "@/lib/gameEnd";
 
 const ROUND_TIME = 30;
 const TOTAL_ROUNDS = 5;
@@ -172,6 +173,8 @@ export default function GuessCountry({ roomId }: { roomId: string }) {
   };
 
   const endGame = async () => {
+    if (!gameData) return;
+    await persistScores(gameData.scores as Record<string, unknown>, gameData.players);
     const db = getFirebaseRTDB();
     await update(ref(db, `rooms/${roomId}/metadata`), { status: "finished" });
   };
