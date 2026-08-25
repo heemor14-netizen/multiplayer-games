@@ -1,0 +1,41 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": false,
+        "metadata": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('rooms').child($roomId).child('metadata').child('host').val() === auth.uid"
+        },
+        "players": {
+          ".read": "auth != null",
+          ".write": "auth != null && (root.child('rooms').child($roomId).child('players').child(auth.uid).exists() || root.child('rooms').child($roomId).child('metadata').child('host').val() === auth.uid)"
+        },
+        "gameState": {
+          ".read": "auth != null && root.child('rooms').child($roomId).child('players').child(auth.uid).exists()",
+          ".write": "auth != null && root.child('rooms').child($roomId).child('players').child(auth.uid).exists()"
+        },
+        "chat": {
+          ".read": "auth != null && root.child('rooms').child($roomId).child('players').child(auth.uid).exists()",
+          ".write": "auth != null && root.child('rooms').child($roomId).child('players').child(auth.uid).exists()",
+          "$messageId": {
+            ".validate": "newData.hasChildren(['uid', 'text', 'timestamp']) && newData.child('uid').val() === auth.uid"
+          }
+        }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid",
+        "totalScore": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "gamesPlayed": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    }
+  }
+}
