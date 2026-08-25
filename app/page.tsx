@@ -69,13 +69,14 @@ function DashboardPage() {
   const { createRoom, availableRooms, joinRoom, sending } = useRoom();
   const router = useRouter();
   const [selectedGame, setSelectedGame] = useState<GameId>("animal-plant-human");
+  const [selectedMaxPlayers, setSelectedMaxPlayers] = useState(4);
   const [filterGame, setFilterGame] = useState<GameId | "all">("all");
   const [joinId, setJoinId] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleCreate = async () => {
     try {
-      const roomId = await createRoom(selectedGame);
+      const roomId = await createRoom(selectedGame, selectedMaxPlayers);
       window.location.href = `${BASE_PATH}/rooms/#${roomId}`;
     } catch (err) {
       alert(err instanceof Error ? err.message : "خطأ في إنشاء الغرفة");
@@ -121,6 +122,26 @@ function DashboardPage() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                عدد اللاعبين
+              </label>
+              <div className="flex gap-1.5">
+                {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setSelectedMaxPlayers(n)}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200 ${
+                      selectedMaxPlayers === n
+                        ? "gradient-primary text-white shadow-md shadow-emerald-500/25"
+                        : "border border-zinc-200 bg-white text-zinc-600 hover:border-emerald-300 hover:text-emerald-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-emerald-600"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
             <Button onClick={handleCreate} loading={sending} size="lg">
               إنشاء غرفة

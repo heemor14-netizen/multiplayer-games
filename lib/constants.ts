@@ -43,5 +43,5 @@ export const ROOM_STATUS = {
 
 export type RoomStatus = (typeof ROOM_STATUS)[keyof typeof ROOM_STATUS];
 
-export const ROOM_MAX_PLAYERS = 4;
+export const ROOM_MAX_PLAYERS = 8;
 export const ROOM_MIN_PLAYERS = 2;

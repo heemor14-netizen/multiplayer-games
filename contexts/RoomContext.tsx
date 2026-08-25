@@ -16,11 +16,12 @@ import {
   remove,
   onValue,
   off,
+  onDisconnect,
 } from "firebase/database";
 import { getFirebaseRTDB } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { logger } from "@/lib/logger";
-import { ROOM_MAX_PLAYERS, type GameId } from "@/lib/constants";
+import { ROOM_MAX_PLAYERS, ROOM_MIN_PLAYERS, type GameId } from "@/lib/constants";
 import type { Room, RoomPlayer, RoomMetadata } from "@/types/room";
 import { v4 as uuid } from "uuid";
 
@@ -28,7 +29,7 @@ interface RoomState {
   currentRoom: Room | null;
   currentRoomId: string | null;
   availableRooms: (Room & { id: string })[];
-  createRoom: (game: GameId) => Promise<string>;
+  createRoom: (game: GameId, maxPlayers?: number) => Promise<string>;
   joinRoom: (roomId: string) => Promise<void>;
   leaveRoom: () => Promise<void>;
   kickPlayer: (targetUid: string) => Promise<void>;
@@ -87,22 +88,36 @@ export function RoomProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    return () => off(roomRef, "value", unsubscribe);
+    const playersRef = ref(db, `rooms/${currentRoomId}/players`);
+    const presenceUnsub = onValue(playersRef, (snapshot) => {
+      if (!snapshot.exists() || Object.keys(snapshot.val() || {}).length === 0) {
+        remove(ref(db, `rooms/${currentRoomId}`));
+        logger.info("Room auto-deleted - empty", { roomId: currentRoomId });
+        setCurrentRoom(null);
+        setCurrentRoomId(null);
+      }
+    });
+
+    return () => {
+      off(roomRef, "value", unsubscribe);
+      off(playersRef, "value", presenceUnsub);
+    };
   }, [currentRoomId]);
 
   const createRoom = useCallback(
-    async (game: GameId): Promise<string> => {
+    async (game: GameId, maxPlayers?: number): Promise<string> => {
       if (!user || !profile) throw new Error("Must be authenticated");
       setSending(true);
 
       try {
         const db = getFirebaseRTDB();
         const roomId = uuid().slice(0, 8).toUpperCase();
+        const clampedMax = Math.max(ROOM_MIN_PLAYERS, Math.min(maxPlayers || ROOM_MAX_PLAYERS, ROOM_MAX_PLAYERS));
         const metadata: RoomMetadata = {
           host: user.uid,
           game,
           status: "lobby",
-          maxPlayers: ROOM_MAX_PLAYERS,
+          maxPlayers: clampedMax,
           createdAt: Date.now(),
         };
 
@@ -173,6 +188,9 @@ export function RoomProvider({ children }: { children: ReactNode }) {
           [user.uid]: player,
         });
 
+        const playerPresenceRef = ref(db, `rooms/${roomId}/players/${user.uid}`);
+        onDisconnect(playerPresenceRef).remove();
+
         setCurrentRoomId(roomId);
         logger.info("Player joined room", { roomId, uid: user.uid });
       } finally {
@@ -207,6 +225,12 @@ export function RoomProvider({ children }: { children: ReactNode }) {
           roomId: currentRoomId,
           uid: user.uid,
         });
+
+        const updatedSnapshot = await get(ref(db, `rooms/${currentRoomId}/players`));
+        if (!updatedSnapshot.exists() || Object.keys(updatedSnapshot.val() || {}).length === 0) {
+          await remove(roomRef);
+          logger.info("Room deleted - empty after player left", { roomId: currentRoomId });
+        }
       }
 
       setCurrentRoomId(null);
@@ -226,6 +250,12 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         roomId: currentRoomId,
         targetUid,
       });
+
+      const updatedSnapshot = await get(ref(db, `rooms/${currentRoomId}/players`));
+      if (!updatedSnapshot.exists() || Object.keys(updatedSnapshot.val() || {}).length === 0) {
+        await remove(ref(db, `rooms/${currentRoomId}`));
+        logger.info("Room deleted - empty after kick", { roomId: currentRoomId });
+      }
     },
     [currentRoomId, user, currentRoom]
   );
