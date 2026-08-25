@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
+import { BASE_PATH } from "@/lib/constants";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -15,7 +15,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +23,7 @@ export default function RegisterPage() {
 
     try {
       await signUp(email, password, name);
-      router.push("/");
+      window.location.href = `${BASE_PATH}/`;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "خطأ في إنشاء الحساب"
@@ -37,7 +36,7 @@ export default function RegisterPage() {
   const handleGoogle = async () => {
     try {
       await signInWithGoogle();
-      router.push("/");
+      window.location.href = `${BASE_PATH}/`;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "خطأ في تسجيل الدخول بـ Google"
