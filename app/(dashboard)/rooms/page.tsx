@@ -54,7 +54,7 @@ export default function RoomPage() {
   if (!currentRoom || !user) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-400 border-t-transparent" />
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function RoomPage() {
                   {entry.name}
                 </span>
               </div>
-              <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+              <span className="font-extrabold text-orange-600 dark:text-orange-400">
                 {entry.score} نقطة
               </span>
             </div>

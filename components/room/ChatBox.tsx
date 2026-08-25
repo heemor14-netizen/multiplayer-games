@@ -72,7 +72,7 @@ export function ChatBox({ roomId, currentUid }: ChatBoxProps) {
               }`}
             >
               {msg.uid !== "system" && msg.uid !== currentUid && (
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="font-bold text-orange-600 dark:text-orange-400">
                   {msg.text.split(":")[0]}:{" "}
                 </span>
               )}
@@ -96,11 +96,11 @@ export function ChatBox({ roomId, currentUid }: ChatBoxProps) {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             placeholder="اكتب رسالة..."
-            className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 dark:border-zinc-700 dark:bg-zinc-800/80 sm:px-4"
+            className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 dark:border-zinc-700 dark:bg-zinc-800/80 sm:px-4"
           />
           <button
             onClick={send}
-            className="gradient-primary shrink-0 rounded-xl px-3 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.98] sm:px-4"
+            className="gradient-primary shrink-0 rounded-xl px-3 py-2 text-sm font-bold text-white shadow-md shadow-orange-500/20 transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.98] sm:px-4"
           >
             إرسال
           </button>

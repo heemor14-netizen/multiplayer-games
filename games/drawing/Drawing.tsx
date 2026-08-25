@@ -260,7 +260,7 @@ export default function Drawing({ roomId }: { roomId: string }) {
                   {gameData.players[uid]?.name || uid}
                 </span>
               </div>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">{score} نقطة</span>
+              <span className="font-bold text-orange-600 dark:text-orange-400">{score} نقطة</span>
             </div>
           ))}
         </div>
@@ -296,7 +296,7 @@ export default function Drawing({ roomId }: { roomId: string }) {
       <div className="flex items-center gap-2">
         <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
           <div
-            className="h-full bg-emerald-600 transition-all"
+            className="h-full bg-orange-600 transition-all"
             style={{ width: `${(gameData.timeLeft / (gameData.status === "drawing" ? DRAW_TIME : GUESS_TIME)) * 100}%` }}
           />
         </div>
@@ -369,8 +369,8 @@ export default function Drawing({ roomId }: { roomId: string }) {
           )}
 
           {gameData.status === "round-end" && (
-            <div className="rounded-lg bg-emerald-50 p-4 text-center dark:bg-emerald-900/20">
-              <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
+            <div className="rounded-lg bg-orange-50 p-4 text-center dark:bg-orange-900/20">
+              <p className="text-lg font-bold text-orange-700 dark:text-orange-400">
                 الكلمة كانت: {gameData.currentWord}
               </p>
             </div>
@@ -386,7 +386,7 @@ export default function Drawing({ roomId }: { roomId: string }) {
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">راسم</span>
                   )}
                   {gameData.correctGuessers.includes(uid) && (
-                    <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">خمّن ✅</span>
+                    <span className="rounded bg-orange-100 px-1.5 py-0.5 text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">خمّن ✅</span>
                   )}
                 </div>
                 <span className="text-xs text-zinc-500">{gameData.scores[uid] || 0} نقطة</span>

@@ -29,7 +29,7 @@ export function Sidebar({ open, onClose }: { open?: boolean; onClose?: () => voi
         }`}
       >
         <div className="flex items-center gap-3 border-b border-white/10 p-5">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-lg font-bold text-white shadow-lg shadow-emerald-500/25">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-lg font-bold text-white shadow-lg shadow-orange-500/25">
             {profile?.photoURL ? (
               <img
                 src={profile.photoURL}
@@ -44,7 +44,7 @@ export function Sidebar({ open, onClose }: { open?: boolean; onClose?: () => voi
             <p className="truncate text-sm font-bold text-white">
               {profile?.displayName || "Loading..."}
             </p>
-            <p className="truncate text-xs font-medium text-emerald-400">
+            <p className="truncate text-xs font-medium text-orange-400">
               {profile?.totalScore || 0} نقطة
             </p>
           </div>
@@ -63,7 +63,7 @@ export function Sidebar({ open, onClose }: { open?: boolean; onClose?: () => voi
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200
                   ${
                     isActive
-                      ? "gradient-primary text-white shadow-lg shadow-emerald-500/25"
+                      ? "gradient-primary text-white shadow-lg shadow-orange-500/25"
                       : "text-zinc-400 hover:bg-white/5 hover:text-white"
                   }`}
               >

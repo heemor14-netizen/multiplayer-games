@@ -27,7 +27,7 @@ export function GameSelector({
             className={`flex items-center gap-1.5 rounded-xl border-2 p-2.5 text-xs font-medium transition-all duration-200 sm:gap-2 sm:p-3 sm:text-sm
               ${
                 currentGame === game.id
-                  ? "border-emerald-400 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-500/10 dark:border-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
+                  ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/10 dark:border-orange-600 dark:bg-orange-900/20 dark:text-orange-400"
                   : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:shadow-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600"
               }
               ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}

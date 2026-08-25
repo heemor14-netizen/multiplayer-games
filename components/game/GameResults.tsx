@@ -42,7 +42,7 @@ export function GameResults({
                 {entry.name}
               </span>
             </div>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="font-bold text-orange-600 dark:text-orange-400">
               {entry.score} نقطة
             </span>
           </div>

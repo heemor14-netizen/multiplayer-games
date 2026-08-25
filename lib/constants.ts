@@ -1,5 +1,5 @@
 export const BASE_PATH = "/multiplayer-games";
-export const APP_NAME = "لعبة مع Friends";
+export const APP_NAME = "فكرة 💡";
 export const APP_DESCRIPTION = "منصة ألعاب جماعية أونلاين";
 
 export const GAMES = {

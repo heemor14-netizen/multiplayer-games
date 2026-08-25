@@ -45,7 +45,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-zinc-50 via-white to-orange-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-orange-950/20">
       <Header />
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:py-20">
         <div className="w-full max-w-sm animate-scale-in">
@@ -111,7 +111,7 @@ export default function RegisterPage() {
               لديك حساب بالفعل؟{" "}
               <Link
                 href="/login"
-                className="font-bold text-emerald-600 transition-colors hover:text-emerald-500"
+                className="font-bold text-orange-600 transition-colors hover:text-orange-500"
               >
                 سجّل الدخول
               </Link>

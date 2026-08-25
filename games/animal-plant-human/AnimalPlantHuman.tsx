@@ -233,7 +233,7 @@ export default function AnimalPlantHuman({ roomId }: { roomId: string }) {
                   {gameData.players[uid]?.name || uid}
                 </span>
               </div>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="font-bold text-orange-600 dark:text-orange-400">
                 {score} نقطة
               </span>
             </div>
@@ -258,13 +258,13 @@ export default function AnimalPlantHuman({ roomId }: { roomId: string }) {
 
       <div className="flex flex-col items-center gap-2">
         <span className="text-sm text-zinc-500">الحرف</span>
-        <span className="text-6xl font-bold text-emerald-600 dark:text-emerald-400">
+        <span className="text-6xl font-bold text-orange-600 dark:text-orange-400">
           {gameData.currentLetter}
         </span>
         <div className="flex items-center gap-2">
           <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
             <div
-              className="h-full bg-emerald-600 transition-all"
+              className="h-full bg-orange-600 transition-all"
               style={{
                 width: `${(gameData.timeLeft / ROUND_TIME) * 100}%`,
               }}
@@ -302,8 +302,8 @@ export default function AnimalPlantHuman({ roomId }: { roomId: string }) {
       )}
 
       {gameData.status === "answering" && submitted && (
-        <div className="rounded-xl bg-emerald-50 p-6 text-center dark:bg-emerald-900/20">
-          <p className="text-emerald-700 dark:text-emerald-400">
+        <div className="rounded-xl bg-orange-50 p-6 text-center dark:bg-orange-900/20">
+          <p className="text-orange-700 dark:text-orange-400">
             ✅ تم تأكيد إجاباتك. في انتظار اللاعبين الآخرين...
           </p>
         </div>

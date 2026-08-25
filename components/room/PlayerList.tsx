@@ -29,7 +29,7 @@ export function PlayerList({
             className="flex items-center justify-between rounded-xl border border-zinc-100 bg-zinc-50/80 px-3 py-2 transition-all hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 sm:px-4 sm:py-3"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-primary text-sm font-bold text-white shadow-md shadow-emerald-500/20 sm:h-9 sm:w-9">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-primary text-sm font-bold text-white shadow-md shadow-orange-500/20 sm:h-9 sm:w-9">
                 {player.photoURL ? (
                   <img
                     src={player.photoURL}
@@ -45,14 +45,14 @@ export function PlayerList({
                   {player.name}
                 </span>
                 {player.uid === hostUid && (
-                  <span className="mr-2 inline-block rounded-lg bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span className="mr-2 inline-block rounded-lg bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
                     قائد
                   </span>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{player.score} نقطة</span>
+              <span className="text-xs font-bold text-orange-600 dark:text-orange-400">{player.score} نقطة</span>
               {hostUid === currentUid &&
                 player.uid !== currentUid &&
                 onKick && (

@@ -191,7 +191,7 @@ export default function Quiz({ roomId }: { roomId: string }) {
                   {gameData.players[uid]?.name || uid}
                 </span>
               </div>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">{score} نقطة</span>
+              <span className="font-bold text-orange-600 dark:text-orange-400">{score} نقطة</span>
             </div>
           ))}
         </div>
@@ -212,7 +212,7 @@ export default function Quiz({ roomId }: { roomId: string }) {
       <div className="flex items-center gap-2">
         <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
           <div
-            className="h-full bg-emerald-600 transition-all"
+            className="h-full bg-orange-600 transition-all"
             style={{ width: `${(gameData.timeLeft / (gameData.status === "showing" ? SHOW_TIME : ANSWER_TIME)) * 100}%` }}
           />
         </div>
@@ -244,7 +244,7 @@ export default function Quiz({ roomId }: { roomId: string }) {
                 className={`rounded-xl border-2 p-4 text-center text-sm font-medium transition-colors
                   ${
                     selectedOption === idx
-                      ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400"
+                      ? "border-orange-500 bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400"
                       : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
                   }
                   ${submitted ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
@@ -262,8 +262,8 @@ export default function Quiz({ roomId }: { roomId: string }) {
           )}
 
           {submitted && (
-            <div className="mt-4 rounded-xl bg-emerald-50 p-4 text-center dark:bg-emerald-900/20">
-              <p className="text-emerald-700 dark:text-emerald-400">
+            <div className="mt-4 rounded-xl bg-orange-50 p-4 text-center dark:bg-orange-900/20">
+              <p className="text-orange-700 dark:text-orange-400">
                 ✅ تم تأكيد إجابتك
               </p>
             </div>
@@ -284,7 +284,7 @@ export default function Quiz({ roomId }: { roomId: string }) {
                   key={idx}
                   className={`rounded-lg p-3 text-center text-sm ${
                     idx === gameData.currentQuestion.correctIndex
-                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                      ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
                       : "bg-zinc-100 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
                   }`}
                 >
@@ -302,7 +302,7 @@ export default function Quiz({ roomId }: { roomId: string }) {
                 <span className="text-sm text-zinc-900 dark:text-zinc-100">
                   {gameData.players[uid]?.name}
                 </span>
-                <span className={`text-sm ${(ansIdx as number) === gameData.currentQuestion.correctIndex ? "text-emerald-600 font-medium" : "text-red-500"}`}>
+                <span className={`text-sm ${(ansIdx as number) === gameData.currentQuestion.correctIndex ? "text-orange-600 font-medium" : "text-red-500"}`}>
                   {gameData.currentQuestion.options[ansIdx as number]}
                   {(ansIdx as number) === gameData.currentQuestion.correctIndex ? " ✅" : " ❌"}
                 </span>

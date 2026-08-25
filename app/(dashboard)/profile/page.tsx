@@ -8,7 +8,7 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-400 border-t-transparent" />
       </div>
     );
   }
@@ -21,7 +21,7 @@ export default function ProfilePage() {
 
       <div className="mx-auto max-w-md overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-24 w-24 items-center justify-center rounded-3xl gradient-primary text-4xl font-bold text-white shadow-xl shadow-emerald-500/25">
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl gradient-primary text-4xl font-bold text-white shadow-xl shadow-orange-500/25">
             {profile.photoURL ? (
               <img
                 src={profile.photoURL}
@@ -42,19 +42,19 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4">
-          <div className="overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 text-center dark:border-emerald-800 dark:from-emerald-900/20 dark:to-teal-900/20">
-            <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+          <div className="overflow-hidden rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 p-5 text-center dark:border-orange-800 dark:from-orange-900/20 dark:to-amber-900/20">
+            <p className="text-3xl font-extrabold text-orange-600 dark:text-orange-400">
               {profile.totalScore}
             </p>
-            <p className="mt-1 text-xs font-bold text-emerald-600/70 dark:text-emerald-400/70">
+            <p className="mt-1 text-xs font-bold text-orange-600/70 dark:text-orange-400/70">
               النقاط الكلية
             </p>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-5 text-center dark:border-indigo-800 dark:from-indigo-900/20 dark:to-purple-900/20">
-            <p className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+            <div className="overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 text-center dark:border-amber-800 dark:from-amber-900/20 dark:to-orange-900/20">
+            <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">
               {profile.gamesPlayed}
             </p>
-            <p className="mt-1 text-xs font-bold text-indigo-600/70 dark:text-indigo-400/70">
+            <p className="mt-1 text-xs font-bold text-amber-600/70 dark:text-amber-400/70">
               الألعاب المكتملة
             </p>
           </div>

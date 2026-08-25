@@ -10,7 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    "gradient-primary text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:brightness-110 active:scale-[0.98]",
+    "gradient-primary text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:brightness-110 active:scale-[0.98]",
   secondary:
     "bg-white border border-zinc-200 text-zinc-800 shadow-sm hover:bg-zinc-50 hover:border-zinc-300 hover:shadow-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-700 dark:hover:border-zinc-600 active:scale-[0.98]",
   danger:
@@ -18,7 +18,7 @@ const variants = {
   ghost:
     "bg-transparent hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 active:scale-[0.98]",
   accent:
-    "gradient-accent text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110 active:scale-[0.98]",
+    "gradient-accent text-white shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 hover:brightness-110 active:scale-[0.98]",
 };
 
 const sizes = {
@@ -45,7 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={`inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2
           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
           ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}

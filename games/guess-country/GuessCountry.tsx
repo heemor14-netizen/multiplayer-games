@@ -211,7 +211,7 @@ export default function GuessCountry({ roomId }: { roomId: string }) {
                   {gameData.players[uid]?.name || uid}
                 </span>
               </div>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">{score} نقطة</span>
+              <span className="font-bold text-orange-600 dark:text-orange-400">{score} نقطة</span>
             </div>
           ))}
         </div>
@@ -229,20 +229,20 @@ export default function GuessCountry({ roomId }: { roomId: string }) {
       </div>
 
       <div className="flex flex-col items-center gap-2">
-        <div className="rounded-2xl bg-emerald-100 px-8 py-6 text-center dark:bg-emerald-900/20">
-          <p className="mb-2 text-sm text-emerald-600 dark:text-emerald-400">التلميح</p>
+        <div className="rounded-2xl bg-orange-100 px-8 py-6 text-center dark:bg-orange-900/20">
+          <p className="mb-2 text-sm text-orange-600 dark:text-orange-400">التلميح</p>
           <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             {gameData.currentHint}
           </p>
           <p className="mt-2 text-sm text-zinc-500">
-            يبدأ بحرف: <span className="font-bold text-emerald-600">{gameData.currentLetter}</span>
+            يبدأ بحرف: <span className="font-bold text-orange-600">{gameData.currentLetter}</span>
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="h-2 w-32 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
             <div
-              className="h-full bg-emerald-600 transition-all"
+              className="h-full bg-orange-600 transition-all"
               style={{ width: `${(gameData.timeLeft / ROUND_TIME) * 100}%` }}
             />
           </div>
@@ -267,8 +267,8 @@ export default function GuessCountry({ roomId }: { roomId: string }) {
       )}
 
       {gameData.status === "answering" && submitted && (
-        <div className="rounded-xl bg-emerald-50 p-6 text-center dark:bg-emerald-900/20">
-          <p className="text-emerald-700 dark:text-emerald-400">
+        <div className="rounded-xl bg-orange-50 p-6 text-center dark:bg-orange-900/20">
+          <p className="text-orange-700 dark:text-orange-400">
             ✅ تم تأكيد إجابتك. في انتظار اللاعبين الآخرين...
           </p>
         </div>
