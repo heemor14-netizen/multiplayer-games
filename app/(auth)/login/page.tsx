@@ -44,17 +44,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
       <Header />
       <main className="flex flex-1 items-center justify-center px-4 py-20">
-        <div className="w-full max-w-sm">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <h1 className="mb-6 text-center text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-              تسجيل الدخول
-            </h1>
+        <div className="w-full max-w-sm animate-scale-in">
+          <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80">
+            <div className="mb-6 text-center">
+              <span className="text-4xl">🎮</span>
+              <h1 className="mt-2 text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
+                تسجيل الدخول
+              </h1>
+            </div>
 
             {error && (
-              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
                 {error}
               </div>
             )}
@@ -76,30 +79,31 @@ export default function LoginPage() {
                 required
                 dir="ltr"
               />
-              <Button type="submit" loading={loading} className="w-full">
+              <Button type="submit" loading={loading} className="w-full mt-2" size="lg">
                 تسجيل الدخول
               </Button>
             </form>
 
-            <div className="my-4 flex items-center gap-3">
-              <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
-              <span className="text-xs text-zinc-400">أو</span>
-              <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+            <div className="my-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent dark:via-zinc-700" />
+              <span className="text-xs font-bold text-zinc-400">أو</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent dark:via-zinc-700" />
             </div>
 
             <Button
               variant="secondary"
               onClick={handleGoogle}
               className="w-full"
+              size="lg"
             >
               الدخول بـ Google
             </Button>
 
-            <p className="mt-4 text-center text-sm text-zinc-500">
+            <p className="mt-5 text-center text-sm text-zinc-500">
               ليس لديك حساب؟{" "}
               <Link
                 href="/register"
-                className="font-medium text-emerald-600 hover:text-emerald-700"
+                className="font-bold text-emerald-600 transition-colors hover:text-emerald-500"
               >
                 أنشئ حساباً
               </Link>

@@ -7,10 +7,10 @@ export function Header() {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950">
-      <Link href="/" className="flex items-center gap-2">
-        <span className="text-xl">🎮</span>
-        <span className="font-bold text-zinc-900 dark:text-zinc-100">
+    <header className="glass dark:glass-dark sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/20 px-4 lg:px-6">
+      <Link href="/" className="flex items-center gap-2.5">
+        <span className="text-2xl">🎮</span>
+        <span className="text-lg font-extrabold text-gradient">
           لعبة مع Friends
         </span>
       </Link>
@@ -20,13 +20,13 @@ export function Header() {
           <>
             <Link
               href="/"
-              className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-zinc-600 transition-all hover:bg-emerald-50 hover:text-emerald-700 dark:text-zinc-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
             >
               لوحة التحكم
             </Link>
             <button
               onClick={() => signOut()}
-              className="rounded-lg px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/20"
             >
               خروج
             </button>
@@ -35,13 +35,13 @@ export function Header() {
           <>
             <Link
               href="/login"
-              className="rounded-lg px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-zinc-600 transition-all hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               تسجيل الدخول
             </Link>
             <Link
               href="/register"
-              className="rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-700"
+              className="gradient-primary rounded-xl px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-xl hover:shadow-emerald-500/30 hover:brightness-110 active:scale-[0.98]"
             >
               حساب جديد
             </Link>

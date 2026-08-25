@@ -3,26 +3,28 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "accent";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
 
 const variants = {
   primary:
-    "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm",
+    "gradient-primary text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:brightness-110 active:scale-[0.98]",
   secondary:
-    "bg-zinc-200 hover:bg-zinc-300 text-zinc-900 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:text-zinc-100",
+    "bg-white border border-zinc-200 text-zinc-800 shadow-sm hover:bg-zinc-50 hover:border-zinc-300 hover:shadow-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-700 dark:hover:border-zinc-600 active:scale-[0.98]",
   danger:
-    "bg-red-600 hover:bg-red-700 text-white shadow-sm",
+    "bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 hover:brightness-110 active:scale-[0.98]",
   ghost:
-    "bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300",
+    "bg-transparent hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 active:scale-[0.98]",
+  accent:
+    "gradient-accent text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-110 active:scale-[0.98]",
 };
 
 const sizes = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-sm",
-  lg: "px-6 py-3 text-base",
+  sm: "px-3 py-1.5 text-sm rounded-lg",
+  md: "px-5 py-2.5 text-sm rounded-xl",
+  lg: "px-7 py-3.5 text-base rounded-xl",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -42,9 +44,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500
-          disabled:opacity-50 disabled:cursor-not-allowed
+        className={`inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
           ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >

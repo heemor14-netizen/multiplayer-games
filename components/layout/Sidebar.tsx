@@ -18,39 +18,39 @@ export function Sidebar({ open, onClose }: { open?: boolean; onClose?: () => voi
     <>
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-64 flex-col border-l border-zinc-200 bg-zinc-50 transition-transform duration-200 dark:border-zinc-800 dark:bg-zinc-900 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-72 flex-col border-l border-white/10 glass-dark transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center gap-3 border-b border-zinc-200 p-4 dark:border-zinc-800">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-lg text-white">
+        <div className="flex items-center gap-3 border-b border-white/10 p-5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-lg font-bold text-white shadow-lg shadow-emerald-500/25">
             {profile?.photoURL ? (
               <img
                 src={profile.photoURL}
                 alt=""
-                className="h-10 w-10 rounded-full"
+                className="h-12 w-12 rounded-2xl"
               />
             ) : (
               profile?.displayName?.charAt(0) || "?"
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            <p className="truncate text-sm font-bold text-white">
               {profile?.displayName || "Loading..."}
             </p>
-            <p className="truncate text-xs text-zinc-500">
+            <p className="truncate text-xs font-medium text-emerald-400">
               {profile?.totalScore || 0} نقطة
             </p>
           </div>
         </div>
 
-        <nav className="flex-1 p-3">
+        <nav className="flex-1 space-y-1 p-3">
           {navItems.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -60,26 +60,26 @@ export function Sidebar({ open, onClose }: { open?: boolean; onClose?: () => voi
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
+                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200
                   ${
                     isActive
-                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                      : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                      ? "gradient-primary text-white shadow-lg shadow-emerald-500/25"
+                      : "text-zinc-400 hover:bg-white/5 hover:text-white"
                   }`}
               >
-                <span>{item.icon}</span>
+                <span className="text-lg">{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
+        <div className="border-t border-white/10 p-3">
           <button
             onClick={() => signOut()}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 hover:text-red-300"
           >
-            <span>🚪</span>
+            <span className="text-lg">🚪</span>
             <span>تسجيل الخروج</span>
           </button>
         </div>

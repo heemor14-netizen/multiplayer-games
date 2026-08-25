@@ -18,8 +18,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
       </div>
     );
   }
@@ -27,12 +27,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen flex-row-reverse">
+    <div className="flex min-h-screen flex-row-reverse bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="flex-1 overflow-auto">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed bottom-4 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 lg:hidden"
+          className="fixed bottom-6 left-6 z-30 flex h-14 w-14 items-center justify-center rounded-2xl gradient-primary text-white shadow-xl shadow-emerald-500/30 transition-all hover:shadow-2xl hover:brightness-110 active:scale-95 lg:hidden"
         >
           ☰
         </button>

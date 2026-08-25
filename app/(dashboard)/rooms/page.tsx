@@ -54,7 +54,7 @@ export default function RoomPage() {
   if (!currentRoom || !user) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
       </div>
     );
   }
@@ -94,49 +94,51 @@ export default function RoomPage() {
 
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-        <span className="text-6xl">🏆</span>
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-          النتائج النهائية
-        </h1>
-        <p className="text-sm text-zinc-500">
-          {game?.icon} {game?.name} | غرفة: {roomId}
-        </p>
+        <div className="animate-scale-in text-center">
+          <span className="text-7xl">🏆</span>
+          <h1 className="mt-4 text-3xl font-extrabold text-gradient">
+            النتائج النهائية
+          </h1>
+          <p className="mt-1 text-sm font-medium text-zinc-500">
+            {game?.icon} {game?.name} | غرفة: {roomId}
+          </p>
+        </div>
 
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md animate-slide-up">
           {sorted.length === 0 && (
             <p className="text-center text-zinc-500">لا توجد نتائج</p>
           )}
           {sorted.map((entry, idx) => (
             <div
               key={entry.uid}
-              className={`flex items-center justify-between rounded-lg p-3 ${
+              className={`flex items-center justify-between rounded-2xl p-4 transition-all ${
                 idx === 0
-                  ? "bg-yellow-100 dark:bg-yellow-900/20"
-                  : "bg-zinc-50 dark:bg-zinc-800"
+                  ? "border border-amber-200 bg-gradient-to-l from-amber-50 to-yellow-50 shadow-lg shadow-amber-500/10 dark:border-amber-800 dark:from-amber-900/20 dark:to-yellow-900/20"
+                  : "border border-zinc-200 bg-white/80 dark:border-zinc-700 dark:bg-zinc-800/80"
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg font-bold text-zinc-500">
-                  #{idx + 1}
+                <span className={`text-lg font-extrabold ${idx === 0 ? "text-amber-500" : "text-zinc-400"}`}>
+                  {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`}
                 </span>
-                <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                <span className="font-bold text-zinc-900 dark:text-zinc-100">
                   {entry.name}
                 </span>
               </div>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
                 {entry.score} نقطة
               </span>
             </div>
           ))}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 animate-slide-up">
           {isHost && (
-            <Button onClick={handleRematch} loading={sending}>
+            <Button onClick={handleRematch} loading={sending} size="lg">
               إعادة المباراة
             </Button>
           )}
-          <Button variant="danger" onClick={handleLeave}>
+          <Button variant="danger" onClick={handleLeave} size="lg">
             مغادرة
           </Button>
         </div>
@@ -145,13 +147,13 @@ export default function RoomPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 lg:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
             {game?.icon} {game?.name}
           </h1>
-          <p className="text-sm text-zinc-500">
+          <p className="mt-1 text-sm font-medium text-zinc-500">
             غرفة: {roomId} | اللاعبون: {playerCount}/{currentRoom.metadata.maxPlayers}
           </p>
         </div>
@@ -170,7 +172,7 @@ export default function RoomPage() {
           />
 
           {isHost && (
-            <div className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-white/20 bg-white/80 p-5 shadow-lg backdrop-blur-sm dark:bg-zinc-900/80">
               <GameSelector
                 currentGame={currentRoom.metadata.game}
                 onChange={changeGame}
@@ -181,6 +183,7 @@ export default function RoomPage() {
                 loading={sending}
                 disabled={playerCount < 2}
                 className="w-full"
+                size="lg"
               >
                 بدء اللعبة ({playerCount} لاعب)
               </Button>

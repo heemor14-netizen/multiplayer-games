@@ -1,22 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --primary-from: #059669;
+  --primary-to: #10b981;
+  --primary-via: #34d399;
+  --accent-from: #6366f1;
+  --accent-to: #8b5cf6;
+  --surface: #ffffff;
+  --surface-elevated: #f1f5f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1121;
+    --foreground: #e2e8f0;
+    --primary-from: #059669;
+    --primary-to: #10b981;
+    --primary-via: #34d399;
+    --accent-from: #6366f1;
+    --accent-to: #8b5cf6;
+    --surface: #1e293b;
+    --surface-elevated: #1e293b;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-primary-from: var(--primary-from);
+  --color-primary-to: var(--primary-to);
+  --color-primary-via: var(--primary-via);
+  --color-accent-from: var(--accent-from);
+  --color-accent-to: var(--accent-to);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --font-sans: 'Tajawal', var(--font-geist-sans), Arial, sans-serif;
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-fade-in: fadeIn 0.4s ease-out;
+  --animate-scale-in: scaleIn 0.3s ease-out;
 }
 
 html {
@@ -26,5 +54,104 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, sans-serif;
+  font-family: 'Tajawal', var(--font-geist-sans), Arial, sans-serif;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
+  to { box-shadow: 0 0 40px rgba(16, 185, 129, 0.3); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@utility glass-dark {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@utility gradient-primary {
+  background: linear-gradient(135deg, var(--primary-from), var(--primary-via), var(--primary-to));
+}
+
+@utility gradient-accent {
+  background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+}
+
+@utility gradient-hero {
+  background: linear-gradient(135deg, #059669 0%, #0891b2 50%, #6366f1 100%);
+}
+
+@utility gradient-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(241,245,249,0.6));
+}
+
+@utility gradient-card-dark {
+  background: linear-gradient(145deg, rgba(30,41,59,0.9), rgba(15,23,42,0.6));
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, var(--primary-from), var(--accent-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@utility shadow-glow {
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.2), 0 0 60px rgba(16, 185, 129, 0.1);
+}
+
+@utility shadow-glow-accent {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.2), 0 0 60px rgba(99, 102, 241, 0.1);
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.3);
+  color: var(--foreground);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
 }

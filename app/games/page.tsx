@@ -48,8 +48,8 @@ export default function GamesPage() {
 
   if (!currentRoom || !user || !gameId) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent" />
       </div>
     );
   }
@@ -58,14 +58,14 @@ export default function GamesPage() {
 
   if (!GameComponent) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gradient-to-br from-zinc-50 via-white to-emerald-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-emerald-950/20">
         <span className="text-6xl">🚧</span>
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-2xl font-extrabold text-gradient">
           اللعبة غير موجودة
         </h1>
         <button
           onClick={() => router.push("/")}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700"
+          className="gradient-primary rounded-xl px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-xl hover:brightness-110 active:scale-[0.98]"
         >
           العودة للرئيسية
         </button>
