@@ -7,6 +7,8 @@ interface PlayerListProps {
   hostUid: string;
   currentUid: string;
   onKick?: (uid: string) => void;
+  onAddBot?: () => void;
+  onRemoveBot?: (uid: string) => void;
 }
 
 export function PlayerList({
@@ -14,58 +16,104 @@ export function PlayerList({
   hostUid,
   currentUid,
   onKick,
+  onAddBot,
+  onRemoveBot,
 }: PlayerListProps) {
   const playerList = Object.values(players);
+  const isHost = hostUid === currentUid;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/80 p-3 shadow-lg backdrop-blur-sm dark:bg-zinc-900/80 sm:p-5">
-      <span className="mb-2 block text-xs font-bold text-zinc-700 dark:text-zinc-300 sm:mb-3 sm:text-sm">
-        اللاعبون ({playerList.length})
-      </span>
-      <div className="flex flex-col gap-1.5 sm:gap-2">
-        {playerList.map((player) => (
-          <div
-            key={player.uid}
-            className="flex items-center justify-between rounded-xl border border-zinc-100 bg-zinc-50/80 px-3 py-2 transition-all hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 sm:px-4 sm:py-3"
+    <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-5 shadow-lg backdrop-blur-sm dark:bg-zinc-900/80">
+      <div className="mb-4 flex items-center justify-between">
+        <span className="text-sm font-extrabold text-zinc-800 dark:text-zinc-200">
+          👥 اللاعبون الموجدون ({playerList.length})
+        </span>
+
+        {isHost && onAddBot && (
+          <button
+            onClick={onAddBot}
+            className="flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3 py-1.5 text-xs font-bold text-purple-700 transition-all hover:bg-purple-100 active:scale-95 dark:border-purple-900 dark:bg-purple-950/40 dark:text-purple-300"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-primary text-sm font-bold text-white shadow-md shadow-orange-500/20 sm:h-9 sm:w-9">
-                {player.photoURL ? (
-                  <img
-                    src={player.photoURL}
-                    alt=""
-                    className="h-8 w-8 rounded-xl sm:h-9 sm:w-9"
-                  />
-                ) : (
-                  player.name.charAt(0)
-                )}
+            <span>🤖 إضافة لاعب آلي (بوت)</span>
+          </button>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2.5">
+        {playerList.map((player) => {
+          const isCurrentPlayer = player.uid === currentUid;
+          const isPlayerHost = player.uid === hostUid;
+          const isBot = Boolean(player.isBot);
+
+          return (
+            <div
+              key={player.uid}
+              className={`flex items-center justify-between rounded-2xl border p-3.5 transition-all ${
+                isCurrentPlayer
+                  ? "border-orange-300 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-950/20"
+                  : "border-zinc-100 bg-zinc-50/80 dark:border-zinc-800 dark:bg-zinc-800/40"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl gradient-primary text-2xl shadow-md shadow-orange-500/20">
+                  {player.photoURL || (isBot ? "🤖" : "👤")}
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">
+                      {player.name}
+                    </span>
+                    {isCurrentPlayer && (
+                      <span className="rounded-md bg-zinc-200 px-1.5 py-0.5 text-[10px] font-bold text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
+                        أنت
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-0.5 flex items-center gap-1.5">
+                    {isPlayerHost && (
+                      <span className="rounded-lg bg-orange-100 px-2 py-0.5 text-[10px] font-extrabold text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+                        👑 قائد الغرفة
+                      </span>
+                    )}
+                    {isBot && (
+                      <span className="rounded-lg bg-purple-100 px-2 py-0.5 text-[10px] font-extrabold text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
+                        🤖 ذكاء اصطناعي
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div>
-                <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                  {player.name}
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold text-orange-600 dark:text-orange-400">
+                  {player.score || 0} نقطة
                 </span>
-                {player.uid === hostUid && (
-                  <span className="mr-2 inline-block rounded-lg bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
-                    قائد
-                  </span>
+
+                {isHost && !isCurrentPlayer && (
+                  <>
+                    {isBot && onRemoveBot ? (
+                      <button
+                        onClick={() => onRemoveBot(player.uid)}
+                        className="rounded-xl bg-purple-100 px-2.5 py-1 text-xs font-bold text-purple-700 transition-colors hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300"
+                      >
+                        حذف
+                      </button>
+                    ) : onKick ? (
+                      <button
+                        onClick={() => onKick(player.uid)}
+                        className="rounded-xl bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
+                      >
+                        طرد
+                      </button>
+                    ) : null}
+                  </>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-orange-600 dark:text-orange-400">{player.score} نقطة</span>
-              {hostUid === currentUid &&
-                player.uid !== currentUid &&
-                onKick && (
-                  <button
-                    onClick={() => onKick(player.uid)}
-                    className="rounded-lg px-2 py-1 text-xs font-bold text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    طرد
-                  </button>
-                )}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

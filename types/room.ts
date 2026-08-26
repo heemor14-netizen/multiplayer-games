@@ -14,6 +14,7 @@ export interface RoomPlayer {
   photoURL: string | null;
   score: number;
   joinedAt: number;
+  isBot?: boolean;
 }
 
 export interface Room {
@@ -25,8 +26,10 @@ export interface Room {
 
 export interface ChatMessage {
   uid: string;
+  name?: string;
   text: string;
   timestamp: number;
+  avatar?: string;
 }
 
 export interface RoomInvite {

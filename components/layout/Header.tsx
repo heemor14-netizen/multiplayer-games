@@ -2,54 +2,90 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { sound } from "@/lib/sound";
 
 export function Header() {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
+
+  const handleToggleTheme = () => {
+    sound.playClick();
+    toggleTheme();
+  };
 
   return (
-    <header className="glass dark:glass-dark sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/20 px-4 lg:px-6">
-      <Link href="/" className="flex items-center gap-2.5">
-        <span className="text-2xl">💡</span>
-        <span className="text-lg font-extrabold text-gradient">
+    <header className="glass sticky top-0 z-50 flex h-16 items-center justify-between border-b border-[var(--border-base)] px-4 lg:px-8">
+      {/* Logo */}
+      <Link href="/" className="group flex items-center gap-2.5">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl gradient-brand text-lg shadow-brand transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+          💡
+        </span>
+        <span className="text-xl font-black tracking-tight text-gradient">
           فكرة
         </span>
       </Link>
 
-      <div className="flex items-center gap-1 sm:gap-3">
+      {/* Right Controls */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Theme Toggle — animated pill */}
+        <button
+          onClick={handleToggleTheme}
+          title={resolvedTheme === "dark" ? "الوضع النهاري ☀️" : "الوضع الليلي 🌙"}
+          aria-label="تبديل الوضع"
+          className="relative flex h-8 w-[60px] cursor-pointer items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-elevated)] px-0.5 shadow-inner focus-visible:outline-none"
+        >
+          {/* Track label hints */}
+          <span className="absolute right-1.5 text-[9px] opacity-40 select-none">
+            {resolvedTheme === "dark" ? "☀️" : "🌙"}
+          </span>
+          {/* Thumb */}
+          <span
+            className={`relative z-10 flex h-7 w-7 items-center justify-center rounded-full text-xs shadow-md transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              resolvedTheme === "dark"
+                ? "translate-x-0 gradient-brand text-white"
+                : "translate-x-[28px] bg-amber-400 text-amber-900"
+            }`}
+          >
+            {resolvedTheme === "dark" ? "🌙" : "☀️"}
+          </span>
+        </button>
+
+        {/* User Controls */}
         {user ? (
-          <>
+          <div className="flex items-center gap-1.5">
             <Link
-              href="/"
-              className="rounded-xl px-2 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-orange-50 hover:text-orange-700 dark:text-zinc-300 dark:hover:bg-orange-900/20 dark:hover:text-orange-400 sm:px-4 sm:text-sm"
+              href="/profile"
+              className="flex items-center gap-2 rounded-xl border border-[var(--border-base)] bg-[var(--bg-elevated)] px-3 py-1.5 text-xs font-bold text-[var(--text-primary)] shadow-card transition-all duration-200 hover:border-orange-400/50 hover:shadow-brand/20"
             >
-              <span className="hidden sm:inline">لوحة التحكم</span>
-              <span className="sm:hidden">🏠</span>
+              <span className="text-base leading-none">{profile?.photoURL || "👤"}</span>
+              <span className="hidden sm:inline max-w-[100px] truncate">
+                {profile?.displayName || "اللاعب"}
+              </span>
             </Link>
+
             <button
               onClick={() => signOut()}
-              className="rounded-xl px-2 py-2 text-xs font-semibold text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/20 sm:px-4 sm:text-sm"
+              className="hidden sm:flex h-9 items-center rounded-xl px-3 text-xs font-bold text-[var(--text-muted)] transition-all hover:bg-red-500/10 hover:text-red-400 active:scale-95"
             >
-              <span className="hidden sm:inline">خروج</span>
-              <span className="sm:hidden">🚪</span>
+              خروج
             </button>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="rounded-xl px-2 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:px-4 sm:text-sm"
+              className="rounded-xl px-3 py-2 text-xs font-bold text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)]"
             >
-              <span className="hidden sm:inline">تسجيل الدخول</span>
-              <span className="sm:hidden">دخول</span>
+              دخول
             </Link>
             <Link
               href="/register"
-              className="gradient-primary rounded-xl px-3 py-2 text-xs font-bold text-white shadow-lg shadow-orange-500/25 transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:brightness-110 active:scale-[0.98] sm:px-5 sm:text-sm"
+              className="gradient-brand rounded-xl px-4 py-2 text-xs font-extrabold text-white shadow-brand transition-all duration-300 hover:brightness-110 active:scale-95"
             >
-              <span className="hidden sm:inline">حساب جديد</span>
-              <span className="sm:hidden">سجّل</span>
+              ابدأ الآن
             </Link>
-          </>
+          </div>
         )}
       </div>
     </header>

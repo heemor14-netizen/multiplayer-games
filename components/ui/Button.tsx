@@ -10,21 +10,21 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    "gradient-primary text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:brightness-110 active:scale-[0.98]",
+    "gradient-brand text-white shadow-brand hover:brightness-110 hover:shadow-[var(--shadow-brand)] active:scale-[0.97]",
   secondary:
-    "bg-white border border-zinc-200 text-zinc-800 shadow-sm hover:bg-zinc-50 hover:border-zinc-300 hover:shadow-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-700 dark:hover:border-zinc-600 active:scale-[0.98]",
+    "border border-[var(--border-strong)] bg-[var(--bg-elevated)] text-[var(--text-primary)] shadow-card hover:border-orange-400/40 hover:shadow-card-hover active:scale-[0.97]",
   danger:
-    "bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 hover:brightness-110 active:scale-[0.98]",
+    "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/25 hover:brightness-110 hover:shadow-xl active:scale-[0.97]",
   ghost:
-    "bg-transparent hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 active:scale-[0.98]",
+    "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] active:scale-[0.97]",
   accent:
-    "gradient-accent text-white shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 hover:brightness-110 active:scale-[0.98]",
+    "gradient-accent text-white shadow-lg shadow-purple-500/25 hover:brightness-110 active:scale-[0.97]",
 };
 
 const sizes = {
-  sm: "px-3 py-1.5 text-sm rounded-lg",
-  md: "px-5 py-2.5 text-sm rounded-xl",
-  lg: "px-7 py-3.5 text-base rounded-xl",
+  sm: "px-3.5 py-1.5 text-xs rounded-xl",
+  md: "px-5 py-2.5 text-sm rounded-2xl",
+  lg: "px-7 py-3.5 text-sm rounded-2xl",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -44,26 +44,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2
-          disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+        className={`inline-flex items-center justify-center gap-2 font-extrabold tracking-wide transition-all duration-200
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]
+          disabled:pointer-events-none disabled:opacity-40
           ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
         {loading && (
-          <svg
-            className="animate-spin h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path
               className="opacity-75"
               fill="currentColor"

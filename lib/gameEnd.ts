@@ -1,14 +1,13 @@
-import { getFirebaseRTDB } from "./firebase";
-import { ref, update, increment } from "firebase/database";
+import { SyncDB } from "./syncEngine";
+import type { UserProfile } from "@/types/user";
 
 export async function persistScores(
   scores: Record<string, unknown>,
-  players: Record<string, { name: string }>
+  players: Record<string, { name: string; isBot?: boolean }>
 ) {
-  const db = getFirebaseRTDB();
-  const updates: Record<string, unknown> = {};
-
   for (const [uid, raw] of Object.entries(scores)) {
+    if (players[uid]?.isBot) continue; // Skip bot score persistence
+
     let total = 0;
     if (typeof raw === "number") {
       total = raw;
@@ -19,14 +18,15 @@ export async function persistScores(
       );
     }
 
-    if (players[uid] && total > 0) {
-      updates[`users/${uid}/totalScore`] = increment(total);
-      updates[`users/${uid}/gamesPlayed`] = increment(1);
-      updates[`users/${uid}/displayName`] = players[uid].name;
+    if (players[uid]) {
+      const userProf = (await SyncDB.get(`users/${uid}`)) as UserProfile | null;
+      if (userProf) {
+        await SyncDB.update(`users/${uid}`, {
+          totalScore: (userProf.totalScore || 0) + total,
+          gamesPlayed: (userProf.gamesPlayed || 0) + 1,
+          displayName: players[uid].name || userProf.displayName,
+        });
+      }
     }
-  }
-
-  if (Object.keys(updates).length > 0) {
-    await update(ref(db), updates);
   }
 }

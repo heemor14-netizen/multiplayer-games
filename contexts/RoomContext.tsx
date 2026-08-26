@@ -9,21 +9,13 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import {
-  ref,
-  set,
-  get,
-  update,
-  remove,
-  onValue,
-  off,
-} from "firebase/database";
-import { getFirebaseRTDB } from "@/lib/firebase";
+import { SyncDB } from "@/lib/syncEngine";
 import { useAuth } from "@/contexts/AuthContext";
 import { logger } from "@/lib/logger";
+import { sound } from "@/lib/sound";
+import { getRandomAvatar, getRandomBotName } from "@/lib/avatars";
 import { ROOM_MAX_PLAYERS, ROOM_MIN_PLAYERS, type GameId } from "@/lib/constants";
 import type { Room, RoomPlayer, RoomMetadata } from "@/types/room";
-import { v4 as uuid } from "uuid";
 
 interface RoomState {
   currentRoom: Room | null;
@@ -33,6 +25,8 @@ interface RoomState {
   joinRoom: (roomId: string) => Promise<void>;
   leaveRoom: () => Promise<void>;
   kickPlayer: (targetUid: string) => Promise<void>;
+  addBot: () => Promise<void>;
+  removeBot: (botUid: string) => Promise<void>;
   changeGame: (game: GameId) => Promise<void>;
   startGame: () => Promise<void>;
   rematch: () => Promise<void>;
@@ -40,6 +34,15 @@ interface RoomState {
 }
 
 const RoomContext = createContext<RoomState | null>(null);
+
+function generateRoomCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
 
 export function RoomProvider({ children }: { children: ReactNode }) {
   const { user, profile } = useAuth();
@@ -53,73 +56,54 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     currentRoomRef.current = currentRoom;
   }, [currentRoom]);
 
+  // Subscribe to public rooms list
   useEffect(() => {
-    if (!user) return;
-
-    const db = getFirebaseRTDB();
-    const roomsRef = ref(db, "rooms");
-    const unsubscribe = onValue(roomsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (!data) {
+    const unsub = SyncDB.subscribe("rooms", (data) => {
+      if (!data || typeof data !== "object") {
         setAvailableRooms([]);
         return;
       }
 
       const rooms: (Room & { id: string })[] = [];
-      for (const [id, room] of Object.entries(data)) {
-        const r = room as Room;
-        if (r.metadata?.status === "lobby" && Object.keys(r.players || {}).length < r.metadata.maxPlayers) {
-          rooms.push({ ...r, id });
+      for (const [id, rawRoom] of Object.entries(data as Record<string, Room>)) {
+        if (
+          rawRoom?.metadata?.status === "lobby" &&
+          Object.keys(rawRoom.players || {}).length < (rawRoom.metadata.maxPlayers || ROOM_MAX_PLAYERS)
+        ) {
+          rooms.push({ ...rawRoom, id });
         }
       }
       setAvailableRooms(rooms);
     });
 
-    return () => off(roomsRef, "value", unsubscribe);
-  }, [user]);
+    return () => unsub();
+  }, []);
 
+  // Subscribe to current room updates
   useEffect(() => {
     if (!currentRoomId) return;
 
-    const db = getFirebaseRTDB();
-    const roomRef = ref(db, `rooms/${currentRoomId}`);
-    const unsubscribe = onValue(roomRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setCurrentRoom(data as Room);
+    const unsub = SyncDB.subscribe(`rooms/${currentRoomId}`, (data) => {
+      if (data && typeof data === "object") {
+        const room = data as Room;
+        setCurrentRoom(room);
       } else {
         setCurrentRoom(null);
         setCurrentRoomId(null);
       }
     });
 
-    const playersRef = ref(db, `rooms/${currentRoomId}/players`);
-    const presenceUnsub = onValue(playersRef, (snapshot) => {
-      if (!snapshot.exists() || Object.keys(snapshot.val() || {}).length === 0) {
-        const status = currentRoomRef.current?.metadata?.status;
-        if (!status || status === "lobby") {
-          remove(ref(db, `rooms/${currentRoomId}`));
-          logger.info("Room auto-deleted - empty lobby", { roomId: currentRoomId });
-          setCurrentRoom(null);
-          setCurrentRoomId(null);
-        }
-      }
-    });
-
-    return () => {
-      off(roomRef, "value", unsubscribe);
-      off(playersRef, "value", presenceUnsub);
-    };
+    return () => unsub();
   }, [currentRoomId]);
 
   const createRoom = useCallback(
     async (game: GameId, maxPlayers?: number): Promise<string> => {
-      if (!user || !profile) throw new Error("Must be authenticated");
+      if (!user || !profile) throw new Error("يجب تسجيل الدخول أولاً");
       setSending(true);
+      sound.playClick();
 
       try {
-        const db = getFirebaseRTDB();
-        const roomId = uuid().slice(0, 8).toUpperCase();
+        const roomId = generateRoomCode();
         const clampedMax = Math.max(ROOM_MIN_PLAYERS, Math.min(maxPlayers || ROOM_MAX_PLAYERS, ROOM_MAX_PLAYERS));
         const metadata: RoomMetadata = {
           host: user.uid,
@@ -131,8 +115,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
         const player: RoomPlayer = {
           uid: user.uid,
-          name: profile.displayName,
-          photoURL: profile.photoURL ?? null,
+          name: profile.displayName || "اللاعب المضيف",
+          photoURL: profile.photoURL ?? getRandomAvatar(),
           score: 0,
           joinedAt: Date.now(),
         };
@@ -144,8 +128,9 @@ export function RoomProvider({ children }: { children: ReactNode }) {
           chat: {},
         };
 
-        await set(ref(db, `rooms/${roomId}`), room);
+        await SyncDB.set(`rooms/${roomId}`, room);
         setCurrentRoomId(roomId);
+        setCurrentRoom(room);
         logger.info("Room created", { roomId, game });
         return roomId;
       } finally {
@@ -157,47 +142,47 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
   const joinRoom = useCallback(
     async (roomId: string) => {
-      if (!user || !profile) throw new Error("Must be authenticated");
+      if (!user || !profile) throw new Error("يجب تسجيل الدخول أولاً");
       setSending(true);
+      sound.playClick();
 
       try {
-        const db = getFirebaseRTDB();
-        const roomRef = ref(db, `rooms/${roomId}`);
-        const snapshot = await get(roomRef);
+        const normalizedId = roomId.trim().toUpperCase();
+        const roomData = (await SyncDB.get(`rooms/${normalizedId}`)) as Room | null;
 
-        if (!snapshot.exists()) {
-          throw new Error("Room not found");
+        if (!roomData) {
+          throw new Error("الغرفة غير موجودة. تأكد من صحة الرمز");
         }
 
-        const room = snapshot.val() as Room;
-
-        if (room.players[user.uid]) {
-          setCurrentRoomId(roomId);
+        if (roomData.players && roomData.players[user.uid]) {
+          setCurrentRoomId(normalizedId);
+          setCurrentRoom(roomData);
           return;
         }
 
-        if (room.metadata.status !== "lobby") {
-          throw new Error("Room is not in lobby");
+        if (roomData.metadata.status !== "lobby") {
+          throw new Error("اللعبة بدأت بالفعل في هذه الغرفة");
         }
 
-        if (Object.keys(room.players).length >= room.metadata.maxPlayers) {
-          throw new Error("Room is full");
+        const currentPlayersCount = Object.keys(roomData.players || {}).length;
+        if (currentPlayersCount >= roomData.metadata.maxPlayers) {
+          throw new Error("الغرفة ممتلئة بالكامل");
         }
 
         const player: RoomPlayer = {
           uid: user.uid,
-          name: profile.displayName,
-          photoURL: profile.photoURL ?? null,
+          name: profile.displayName || "لاعب جديد",
+          photoURL: profile.photoURL ?? getRandomAvatar(),
           score: 0,
           joinedAt: Date.now(),
         };
 
-        await update(ref(db, `rooms/${roomId}/players`), {
+        await SyncDB.update(`rooms/${normalizedId}/players`, {
           [user.uid]: player,
         });
 
-        setCurrentRoomId(roomId);
-        logger.info("Player joined room", { roomId, uid: user.uid });
+        setCurrentRoomId(normalizedId);
+        logger.info("Player joined room", { roomId: normalizedId, uid: user.uid });
       } finally {
         setSending(false);
       }
@@ -208,37 +193,35 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const leaveRoom = useCallback(async () => {
     if (!currentRoomId || !user) return;
     setSending(true);
+    sound.playClick();
 
     try {
-      const db = getFirebaseRTDB();
-      const roomRef = ref(db, `rooms/${currentRoomId}`);
-      const snapshot = await get(roomRef);
-
-      if (!snapshot.exists()) {
+      const roomData = (await SyncDB.get(`rooms/${currentRoomId}`)) as Room | null;
+      if (!roomData) {
         setCurrentRoomId(null);
+        setCurrentRoom(null);
         return;
       }
 
-      const room = snapshot.val() as Room;
+      if (roomData.metadata.host === user.uid) {
+        // If host leaves, disband or transfer host
+        const remainingUids = Object.keys(roomData.players || {}).filter(
+          (uid) => uid !== user.uid && !roomData.players[uid]?.isBot
+        );
 
-      if (room.metadata.host === user.uid) {
-        await remove(roomRef);
-        logger.info("Room disbanded by host", { roomId: currentRoomId });
-      } else {
-        await remove(ref(db, `rooms/${currentRoomId}/players/${user.uid}`));
-        logger.info("Player left room", {
-          roomId: currentRoomId,
-          uid: user.uid,
-        });
-
-        const updatedSnapshot = await get(ref(db, `rooms/${currentRoomId}/players`));
-        if (!updatedSnapshot.exists() || Object.keys(updatedSnapshot.val() || {}).length === 0) {
-          await remove(roomRef);
-          logger.info("Room deleted - empty after player left", { roomId: currentRoomId });
+        if (remainingUids.length === 0) {
+          await SyncDB.remove(`rooms/${currentRoomId}`);
+        } else {
+          const newHost = remainingUids[0];
+          await SyncDB.remove(`rooms/${currentRoomId}/players/${user.uid}`);
+          await SyncDB.update(`rooms/${currentRoomId}/metadata`, { host: newHost });
         }
+      } else {
+        await SyncDB.remove(`rooms/${currentRoomId}/players/${user.uid}`);
       }
 
       setCurrentRoomId(null);
+      setCurrentRoom(null);
     } finally {
       setSending(false);
     }
@@ -248,19 +231,45 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     async (targetUid: string) => {
       if (!currentRoomId || !user || !currentRoom) return;
       if (currentRoom.metadata.host !== user.uid) return;
+      sound.playClick();
 
-      const db = getFirebaseRTDB();
-      await remove(ref(db, `rooms/${currentRoomId}/players/${targetUid}`));
-      logger.info("Player kicked", {
-        roomId: currentRoomId,
-        targetUid,
-      });
+      await SyncDB.remove(`rooms/${currentRoomId}/players/${targetUid}`);
+      logger.info("Player kicked", { roomId: currentRoomId, targetUid });
+    },
+    [currentRoomId, user, currentRoom]
+  );
 
-      const updatedSnapshot = await get(ref(db, `rooms/${currentRoomId}/players`));
-      if (!updatedSnapshot.exists() || Object.keys(updatedSnapshot.val() || {}).length === 0) {
-        await remove(ref(db, `rooms/${currentRoomId}`));
-        logger.info("Room deleted - empty after kick", { roomId: currentRoomId });
-      }
+  const addBot = useCallback(async () => {
+    if (!currentRoomId || !user || !currentRoom) return;
+    if (currentRoom.metadata.host !== user.uid) return;
+    sound.playClick();
+
+    const existingNames = Object.values(currentRoom.players).map((p) => p.name);
+    const botId = `bot_${Math.random().toString(36).substring(2, 8)}`;
+    const botName = getRandomBotName(existingNames);
+    const botAvatar = getRandomAvatar();
+
+    const botPlayer: RoomPlayer = {
+      uid: botId,
+      name: botName,
+      photoURL: botAvatar,
+      score: 0,
+      joinedAt: Date.now(),
+      isBot: true,
+    };
+
+    await SyncDB.update(`rooms/${currentRoomId}/players`, {
+      [botId]: botPlayer,
+    });
+  }, [currentRoomId, user, currentRoom]);
+
+  const removeBot = useCallback(
+    async (botUid: string) => {
+      if (!currentRoomId || !user || !currentRoom) return;
+      if (currentRoom.metadata.host !== user.uid) return;
+      sound.playClick();
+
+      await SyncDB.remove(`rooms/${currentRoomId}/players/${botUid}`);
     },
     [currentRoomId, user, currentRoom]
   );
@@ -269,9 +278,9 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     async (game: GameId) => {
       if (!currentRoomId || !user || !currentRoom) return;
       if (currentRoom.metadata.host !== user.uid) return;
+      sound.playClick();
 
-      const db = getFirebaseRTDB();
-      await update(ref(db, `rooms/${currentRoomId}/metadata`), { game });
+      await SyncDB.update(`rooms/${currentRoomId}/metadata`, { game });
       logger.info("Game changed", { roomId: currentRoomId, game });
     },
     [currentRoomId, user, currentRoom]
@@ -280,45 +289,34 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const startGame = useCallback(async () => {
     if (!currentRoomId || !user || !currentRoom) return;
     if (currentRoom.metadata.host !== user.uid) return;
+    sound.playGameStart();
 
     const playerCount = Object.keys(currentRoom.players).length;
-    const gameConfig = {
-      "animal-plant-human": { minPlayers: 2 },
-      "guess-country": { minPlayers: 2 },
-      drawing: { minPlayers: 2 },
-      quiz: { minPlayers: 2 },
-    }[currentRoom.metadata.game];
-
-    if (playerCount < gameConfig.minPlayers) {
-      throw new Error("Not enough players");
+    if (playerCount < 1) {
+      throw new Error("لا يوجد لاعبين في الغرفة");
     }
 
-    const db = getFirebaseRTDB();
-    await update(ref(db, `rooms/${currentRoomId}/metadata`), {
+    await SyncDB.update(`rooms/${currentRoomId}/metadata`, {
       status: "playing",
     });
-    logger.info("Game started", {
-      roomId: currentRoomId,
-      game: currentRoom.metadata.game,
-    });
+    logger.info("Game started by host", { roomId: currentRoomId, game: currentRoom.metadata.game });
   }, [currentRoomId, user, currentRoom]);
 
   const rematch = useCallback(async () => {
     if (!currentRoomId || !user || !currentRoom) return;
     if (currentRoom.metadata.host !== user.uid) return;
+    sound.playClick();
 
-    const db = getFirebaseRTDB();
-    const updates: Record<string, unknown> = {};
-    updates[`rooms/${currentRoomId}/metadata/status`] = "lobby";
-    updates[`rooms/${currentRoomId}/gameState`] = null;
+    const updates: Record<string, unknown> = {
+      "metadata/status": "lobby",
+      gameState: null,
+    };
 
-    const resetPlayers: Record<string, { score: number }> = {};
     for (const uid of Object.keys(currentRoom.players)) {
-      resetPlayers[uid] = { score: 0 };
+      updates[`players/${uid}/score`] = 0;
     }
-    updates[`rooms/${currentRoomId}/players`] = resetPlayers;
 
-    await update(ref(db), updates);
+    await SyncDB.update(`rooms/${currentRoomId}`, updates);
     logger.info("Rematch started", { roomId: currentRoomId });
   }, [currentRoomId, user, currentRoom]);
 
@@ -332,6 +330,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         joinRoom,
         leaveRoom,
         kickPlayer,
+        addBot,
+        removeBot,
         changeGame,
         startGame,
         rematch,

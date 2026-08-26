@@ -2,32 +2,33 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
-import { BASE_PATH } from "@/lib/constants";
+import { sound } from "@/lib/sound";
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, signInAsGuest } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    sound.playClick();
 
     try {
-      await signUp(email, password, name);
-      window.location.href = `${BASE_PATH}/`;
+      await signUp(email, password, displayName);
+      router.push("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "خطأ في إنشاء الحساب"
-      );
+      setError(err instanceof Error ? err.message : "خطأ في إنشاء الحساب");
     } finally {
       setLoading(false);
     }
@@ -35,12 +36,21 @@ export default function RegisterPage() {
 
   const handleGoogle = async () => {
     try {
+      sound.playClick();
       await signInWithGoogle();
-      window.location.href = `${BASE_PATH}/`;
+      router.push("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "خطأ في تسجيل الدخول بـ Google"
-      );
+      setError(err instanceof Error ? err.message : "خطأ في تسجيل الدخول بـ Google");
+    }
+  };
+
+  const handleGuest = async () => {
+    try {
+      sound.playClick();
+      await signInAsGuest(displayName || undefined);
+      router.push("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطأ في الدخول كضيف");
     }
   };
 
@@ -51,24 +61,27 @@ export default function RegisterPage() {
         <div className="w-full max-w-sm animate-scale-in">
           <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-6 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80 sm:p-8">
             <div className="mb-6 text-center">
-              <span className="text-4xl">🎮</span>
-              <h1 className="mt-2 text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
+              <span className="text-5xl block animate-bounce">✨</span>
+              <h1 className="mt-2 text-2xl font-black text-zinc-900 dark:text-zinc-100">
                 إنشاء حساب جديد
               </h1>
             </div>
 
             {error && (
-              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-bold text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Input
-                label="الاسم"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                label="اسم اللاعب"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
                 required
+                dir="rtl"
+                placeholder="مثال: فارس الألعاب"
               />
               <Input
                 label="البريد الإلكتروني"
@@ -84,7 +97,6 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
                 dir="ltr"
               />
               <Button type="submit" loading={loading} className="w-full mt-2" size="lg">
@@ -98,14 +110,23 @@ export default function RegisterPage() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-300 to-transparent dark:via-zinc-700" />
             </div>
 
-            <Button
-              variant="secondary"
-              onClick={handleGoogle}
-              className="w-full"
-              size="lg"
-            >
-              التسجيل بـ Google
-            </Button>
+            <div className="flex flex-col gap-2.5">
+              <Button
+                variant="secondary"
+                onClick={handleGoogle}
+                className="w-full"
+                size="md"
+              >
+                الدخول بـ Google 🌐
+              </Button>
+
+              <button
+                onClick={handleGuest}
+                className="w-full rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2.5 text-xs font-black text-orange-700 hover:bg-orange-100 transition-all active:scale-95 dark:border-orange-900 dark:bg-orange-950/40 dark:text-orange-300"
+              >
+                🚀 الدخول الفوري كضيف
+              </button>
+            </div>
 
             <p className="mt-5 text-center text-sm text-zinc-500">
               لديك حساب بالفعل؟{" "}
@@ -113,7 +134,7 @@ export default function RegisterPage() {
                 href="/login"
                 className="font-bold text-orange-600 transition-colors hover:text-orange-500"
               >
-                سجّل الدخول
+                تسجيل الدخول
               </Link>
             </p>
           </div>
