@@ -1,0 +1,11 @@
+{
+  "/(auth)/login/page": "/login",
+  "/(auth)/register/page": "/register",
+  "/(dashboard)/profile/page": "/profile",
+  "/(dashboard)/rooms/page": "/rooms",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/favicon.ico/route": "/favicon.ico",
+  "/games/page": "/games",
+  "/page": "/"
+}
