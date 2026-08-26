@@ -46,10 +46,10 @@ export default function RoomPage() {
   }, [roomId, currentRoomId, joinRoom, router]);
 
   useEffect(() => {
-    if (currentRoom && currentRoom.metadata.status === ROOM_STATUS.PLAYING) {
-      window.location.href = `${BASE_PATH}/games/#${currentRoom.metadata.game}`;
+    if (currentRoom && currentRoom.metadata.status === ROOM_STATUS.PLAYING && currentRoomId) {
+      window.location.href = `${BASE_PATH}/games/#${currentRoomId}:${currentRoom.metadata.game}`;
     }
-  }, [currentRoom]);
+  }, [currentRoom, currentRoomId]);
 
   if (!currentRoom || !user) {
     return (

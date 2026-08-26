@@ -163,17 +163,17 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
         const room = snapshot.val() as Room;
 
+        if (room.players[user.uid]) {
+          setCurrentRoomId(roomId);
+          return;
+        }
+
         if (room.metadata.status !== "lobby") {
           throw new Error("Room is not in lobby");
         }
 
         if (Object.keys(room.players).length >= room.metadata.maxPlayers) {
           throw new Error("Room is full");
-        }
-
-        if (room.players[user.uid]) {
-          setCurrentRoomId(roomId);
-          return;
         }
 
         const player: RoomPlayer = {
