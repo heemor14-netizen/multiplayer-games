@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import {
@@ -16,7 +17,6 @@ import {
   remove,
   onValue,
   off,
-  onDisconnect,
 } from "firebase/database";
 import { getFirebaseRTDB } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
@@ -47,6 +47,11 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<(Room & { id: string })[]>([]);
   const [sending, setSending] = useState(false);
+  const currentRoomRef = useRef<Room | null>(null);
+
+  useEffect(() => {
+    currentRoomRef.current = currentRoom;
+  }, [currentRoom]);
 
   useEffect(() => {
     if (!user) return;
@@ -91,10 +96,13 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     const playersRef = ref(db, `rooms/${currentRoomId}/players`);
     const presenceUnsub = onValue(playersRef, (snapshot) => {
       if (!snapshot.exists() || Object.keys(snapshot.val() || {}).length === 0) {
-        remove(ref(db, `rooms/${currentRoomId}`));
-        logger.info("Room auto-deleted - empty", { roomId: currentRoomId });
-        setCurrentRoom(null);
-        setCurrentRoomId(null);
+        const status = currentRoomRef.current?.metadata?.status;
+        if (!status || status === "lobby") {
+          remove(ref(db, `rooms/${currentRoomId}`));
+          logger.info("Room auto-deleted - empty lobby", { roomId: currentRoomId });
+          setCurrentRoom(null);
+          setCurrentRoomId(null);
+        }
       }
     });
 
@@ -187,9 +195,6 @@ export function RoomProvider({ children }: { children: ReactNode }) {
         await update(ref(db, `rooms/${roomId}/players`), {
           [user.uid]: player,
         });
-
-        const playerPresenceRef = ref(db, `rooms/${roomId}/players/${user.uid}`);
-        onDisconnect(playerPresenceRef).remove();
 
         setCurrentRoomId(roomId);
         logger.info("Player joined room", { roomId, uid: user.uid });
